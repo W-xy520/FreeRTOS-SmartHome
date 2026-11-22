@@ -1,5 +1,5 @@
 #include "FreeRTOS_Demo.h"
-/*FreeRTOS±ØÐëÌí¼ÓµÄ¿â*/
+/*FreeRTOSå¿…é¡»æ·»åŠ çš„åº“*/
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -23,50 +23,50 @@
 #include "Buzzer.h"
 #include "iwdg.h"
 
-/*Ò»Ð©°´¼ü¹¦ÄÜµÄÈ«¾Ö±äÁ¿*/
+/*ä¸€äº›æŒ‰é”®åŠŸèƒ½çš„å…¨å±€å˜é‡*/
 
 volatile uint8_t LED_Flag = 0;
 uint8_t LED_State = 0;
 
 extern volatile uint16_t Servo_CCR;
 
-// ´´½¨Ò»¸öÊÂ¼þ±êÖ¾×é£¬½ÓÊÜÍêÐÅºÅ¾Í·¢ËÍµ½ÔÆ¶Ë
+// åˆ›å»ºä¸€ä¸ªäº‹ä»¶æ ‡å¿—ç»„ï¼ŒæŽ¥å—å®Œä¿¡å·å°±å‘é€åˆ°äº‘ç«¯
 
 extern QueueHandle_t Key_Queue_handle;
 
-// ÊÂ¼þ±êÖ¾×é¾ä±ú
+// äº‹ä»¶æ ‡å¿—ç»„å¥æŸ„
 extern EventGroupHandle_t Send_inf_handle;
 
-// ·äÃùÆ÷ÐÅºÅÁ¿¾ä±ú
+// èœ‚é¸£å™¨ä¿¡å·é‡å¥æŸ„
 SemaphoreHandle_t Buzzer_Semaphore_handle;
 
-// »¥³âÁ¿
+// äº’æ–¥é‡
 QueueHandle_t WiFi_Mutex_handle;
 
-// ´®¿Ú½ÓÊÕÊý×é
+// ä¸²å£æŽ¥æ”¶æ•°ç»„
 extern uint8_t AT_receive_buf[256];
 
-// ÈÎÎñ¾ä±ú
-TaskHandle_t Connect_wifi_handle;       // Á¬½Ówifi
-TaskHandle_t AT_Task_Parser_handle;     // ¼àÌýÈÎÎñ
-TaskHandle_t Init_handle;               // ³õÊ¼»¯ÈÎÎñ
-TaskHandle_t Connect_emqx_handle;       // Á¬½ÓEMQXÆ½Ì¨
-TaskHandle_t AT_SubscribeTopic_handle;  // ¶©ÔÄÖ÷ÌâÈÎÎñ
-TaskHandle_t Switch_Control_handle;     // WiFiÖÐµÄ°´¼ü¿ØÖÆÈÎÎñ
-TaskHandle_t Read_HumiTemp_handle;      // ¶ÁÈ¡ÎÂÊª¶È
-TaskHandle_t Read_AD_handle;            // ¶ÁÈ¡ADÖµ
-TaskHandle_t Key_Task_handle;           // »úÐµ°´¼ü¿ØÖÆÈÎÎñ
-TaskHandle_t OLED_Display_handle;       // OLEDµÄÏÔÊ¾ÈÎÎñ
-TaskHandle_t Send_inf_toEMQX_handle;    // ÍùWiFiÉÏ·¢ËÍÏûÏ¢µÄÈÎÎñ
-TaskHandle_t Encoder_Read_handle;       // ¶ÁÈ¡±àÂëÆ÷ÊýÖµµÄÈÎÎñ
-TaskHandle_t Voice_Parser_handle;       // ÓïÒô¼àÌýÈÎÎñ
-TaskHandle_t Buzzer_Parser_handle;      // ·äÃùÆ÷
-TaskHandle_t WiFi_EMQX_Listener_handle; // ÍøÂç¼àÌý
+// ä»»åŠ¡å¥æŸ„
+TaskHandle_t Connect_wifi_handle;       // è¿žæŽ¥wifi
+TaskHandle_t AT_Task_Parser_handle;     // ç›‘å¬ä»»åŠ¡
+TaskHandle_t Init_handle;               // åˆå§‹åŒ–ä»»åŠ¡
+TaskHandle_t Connect_emqx_handle;       // è¿žæŽ¥EMQXå¹³å°
+TaskHandle_t AT_SubscribeTopic_handle;  // è®¢é˜…ä¸»é¢˜ä»»åŠ¡
+TaskHandle_t Switch_Control_handle;     // WiFiä¸­çš„æŒ‰é”®æŽ§åˆ¶ä»»åŠ¡
+TaskHandle_t Read_HumiTemp_handle;      // è¯»å–æ¸©æ¹¿åº¦
+TaskHandle_t Read_AD_handle;            // è¯»å–ADå€¼
+TaskHandle_t Key_Task_handle;           // æœºæ¢°æŒ‰é”®æŽ§åˆ¶ä»»åŠ¡
+TaskHandle_t OLED_Display_handle;       // OLEDçš„æ˜¾ç¤ºä»»åŠ¡
+TaskHandle_t Send_inf_toEMQX_handle;    // å¾€WiFiä¸Šå‘é€æ¶ˆæ¯çš„ä»»åŠ¡
+TaskHandle_t Encoder_Read_handle;       // è¯»å–ç¼–ç å™¨æ•°å€¼çš„ä»»åŠ¡
+TaskHandle_t Voice_Parser_handle;       // è¯­éŸ³ç›‘å¬ä»»åŠ¡
+TaskHandle_t Buzzer_Parser_handle;      // èœ‚é¸£å™¨
+TaskHandle_t WiFi_EMQX_Listener_handle; // ç½‘ç»œç›‘å¬
 
-// Èí¼þ¶¨Ê±Æ÷¾ä±ú
+// è½¯ä»¶å®šæ—¶å™¨å¥æŸ„
 TimerHandle_t Timer_handle;
 
-// ÈÎÎñ
+// ä»»åŠ¡
 void AT_Task_Parser(void *param);
 void Connect_wifi(void *param);
 void Init(void *param);
@@ -83,11 +83,11 @@ void Voice_Parser_Task(void *param);
 void Buzzer_Parser_Task(void *param);
 void WiFi_EMQX_Listener_Task(void *param);
 
-EventGroupHandle_t EMQX_Event_handle; // ÅÐ¶ÏwifiºÍemqxÊÇ·ñÔÚÏßµÄÊÂ¼þ±êÖ¾×éµÄ¾ä±ú
+EventGroupHandle_t EMQX_Event_handle; // åˆ¤æ–­wifiå’Œemqxæ˜¯å¦åœ¨çº¿çš„äº‹ä»¶æ ‡å¿—ç»„çš„å¥æŸ„
 
 
 
-SemaphoreHandle_t ERROR_semaphore_handle;//·¢Éú´íÎóÊ±»½ÐÑwifi¼à¿Ø
+SemaphoreHandle_t ERROR_semaphore_handle;//å‘ç”Ÿé”™è¯¯æ—¶å”¤é†’wifiç›‘æŽ§
 
 
 
@@ -101,7 +101,7 @@ char humidity[15] = {0};
 char light[15] = {0};
 char air[25] = {0};
 
-// Èí¼þ¶¨Ê±Æ÷»Øµ÷º¯Êý
+// è½¯ä»¶å®šæ—¶å™¨å›žè°ƒå‡½æ•°
 void MyTimer_Callback(TimerHandle_t xTimer);
 
 void vApplicationIdleHook(void)
@@ -109,29 +109,29 @@ void vApplicationIdleHook(void)
     HAL_IWDG_Refresh(&hiwdg);
 }
 
-// Æô¶¯º¯Êý
+// å¯åŠ¨å‡½æ•°
 void FreeRTOS_Start(void)
 {
-    // ´´½¨³õÊ¼»¯ÈÎÎñ²¢ÇÒ¿ªÆôÈí¼þ¶¨Ê±Æ÷
+    // åˆ›å»ºåˆå§‹åŒ–ä»»åŠ¡å¹¶ä¸”å¼€å¯è½¯ä»¶å®šæ—¶å™¨
     xTaskCreate(Init, "Init", 100, NULL, 3, &Init_handle);
     Timer_handle = xTimerCreate("Soft_Timer", pdMS_TO_TICKS(20), pdTRUE, (void *)1, MyTimer_Callback);
 
     vTaskStartScheduler();
 }
 
-// ³õÊ¼»¯²¢´´½¨³öÀ´ÆäËûÈÎÎñ
+// åˆå§‹åŒ–å¹¶åˆ›å»ºå‡ºæ¥å…¶ä»–ä»»åŠ¡
 void Init(void *param)
 {
-    // »¥³âÁ¿
+    // äº’æ–¥é‡
     WiFi_Mutex_handle = xSemaphoreCreateMutex();
 
-    //´´½¨ÐÅºÅÁ¿
+    //åˆ›å»ºä¿¡å·é‡
     ERROR_semaphore_handle = xSemaphoreCreateBinary();
 
-    // ´´½¨·äÃùÆ÷ÐÅºÅÁ¿
+    // åˆ›å»ºèœ‚é¸£å™¨ä¿¡å·é‡
     Buzzer_Semaphore_handle = xSemaphoreCreateBinary();
 
-    // ´´½¨ÍøÂç¼àÌýµÄÊÂ¼þ±êÖ¾×é
+    // åˆ›å»ºç½‘ç»œç›‘å¬çš„äº‹ä»¶æ ‡å¿—ç»„
     EMQX_Event_handle = xEventGroupCreate();
 
     xTaskCreate(Key_Task, "Key_Task", 130, NULL, 3, &Key_Task_handle);
@@ -145,10 +145,10 @@ void Init(void *param)
         ;
 }
 
-// Á¬½ÓWIFIµÄÈÎÎñ
+// è¿žæŽ¥WIFIçš„ä»»åŠ¡
 void Connect_wifi(void *param)
 {
-    // µÈ´ýÉÏµçÆô¶¯µÄÐÅºÅ´¦ÀíÍê
+    // ç­‰å¾…ä¸Šç”µå¯åŠ¨çš„ä¿¡å·å¤„ç†å®Œ
     HAL_Delay(500);
 
     if (BKP->DR1 != 0xA5A5)
@@ -158,7 +158,7 @@ void Connect_wifi(void *param)
         AT_SendCommand("AT+CWJAP=\"**********\",\"**********\"");
     }
 
-    // Á¬½ÓÉÏWiFiºó´´½¨Ò»¸öÁ¬½ÓMQTTÔÆ¶ËµÄÈÎÎñ
+    // è¿žæŽ¥ä¸ŠWiFiåŽåˆ›å»ºä¸€ä¸ªè¿žæŽ¥MQTTäº‘ç«¯çš„ä»»åŠ¡
     xTaskCreate(Connect_EMQX, "Connect_EMQX", 100, NULL, 1, &Connect_emqx_handle);
 
     vTaskDelete(NULL);
@@ -167,25 +167,25 @@ void Connect_wifi(void *param)
         ;
 }
 
-// Á¬½ÓMQTTÆ½Ì¨µÄÃüÁî
+// è¿žæŽ¥MQTTå¹³å°çš„å‘½ä»¤
 void Connect_EMQX(void *param)
 {
     if (BKP->DR1 != 0xA5A5)
     {
-        // Á¬½ÓÇ°ÏÈ³õÊ¼»¯ESP8266
+        // è¿žæŽ¥å‰å…ˆåˆå§‹åŒ–ESP8266
         AT_SendCommand("AT+MQTTCLEAN=0");
 
-        // Á¬½ÓEMQX
-        AT_SendCommand("AT+MQTTUSERCFG=0,1,\"esp8266\",\"\",\"\",0,0,\"\""); // Á¬½Ó¹«Íø£¬ÈÝÒ×²âÊÔ
+        // è¿žæŽ¥EMQX
+        AT_SendCommand("AT+MQTTUSERCFG=0,1,\"esp8266\",\"\",\"\",0,0,\"\""); // è¿žæŽ¥å…¬ç½‘ï¼Œå®¹æ˜“æµ‹è¯•
 
-        AT_SendCommand("AT+MQTTCONNCFG=0,30,0,\"esp/status\",\"offline\",0,1"); // ÅäÖÃÒÅÖö
+        AT_SendCommand("AT+MQTTCONNCFG=0,30,0,\"esp/status\",\"offline\",0,1"); // é…ç½®é—å˜±
 
         AT_SendCommand("AT+MQTTCONN=0,\"broker.emqx.io\",1883,0");
 
         BKP->DR1 = 0xA5A5;
     }
 
-    // Á¬½ÓÉÏÔÆ¶Ëºó´´½¨Ò»¸ö¶©ÔÄÖ÷ÌâµÄÈÎÎñ
+    // è¿žæŽ¥ä¸Šäº‘ç«¯åŽåˆ›å»ºä¸€ä¸ªè®¢é˜…ä¸»é¢˜çš„ä»»åŠ¡
     xTaskCreate(AT_SubscribeTopic_Task, "AT_SendandReceive_Task", 150, NULL, 1, &AT_SubscribeTopic_handle);
 
     vTaskDelete(NULL);
@@ -193,30 +193,30 @@ void Connect_EMQX(void *param)
         ;
 }
 
-// ¶©ÔÄÖ÷ÌâµÄÈÎÎñ
+// è®¢é˜…ä¸»é¢˜çš„ä»»åŠ¡
 void AT_SubscribeTopic_Task(void *param)
 {
-    // ¶©ÔÄÖ÷Ìâ£¬ºóÃæ¿ÉÒÔ½ÓÊÕÕâ¸öÖ÷ÌâµÄÏûÏ¢
+    // è®¢é˜…ä¸»é¢˜ï¼ŒåŽé¢å¯ä»¥æŽ¥æ”¶è¿™ä¸ªä¸»é¢˜çš„æ¶ˆæ¯
 
-    AT_SendCommand("AT+MQTTSUB=0,\"switch_control\",0"); // ¶©ÔÄ¿ª¹Ø¿ØÖÆÖ÷Ìâ
+    AT_SendCommand("AT+MQTTSUB=0,\"switch_control\",0"); // è®¢é˜…å¼€å…³æŽ§åˆ¶ä¸»é¢˜
 
-    // ´´½¨Ò»¸ö°´¼ü¿ØÖÆµÄ¼àÌýÈÎÎñ
+    // åˆ›å»ºä¸€ä¸ªæŒ‰é”®æŽ§åˆ¶çš„ç›‘å¬ä»»åŠ¡
     xTaskCreate(Switch_Control_Parser, "Switch_Control_Parser", 80, NULL, 4, &Switch_Control_handle);
-    // ´´½¨¶ÁÈ¡ÎÂÊª¶ÈºÍADCµÄÈÎÎñ£¬»¹ÓÐ°´¼ü¿ØÖÆµÄÈÎÎñ,»¹ÓÐ°ÑÊý¾Ý·¢ËÍµ½ÔÆ¶ËµÄÈÎÎñ
+    // åˆ›å»ºè¯»å–æ¸©æ¹¿åº¦å’ŒADCçš„ä»»åŠ¡ï¼Œè¿˜æœ‰æŒ‰é”®æŽ§åˆ¶çš„ä»»åŠ¡,è¿˜æœ‰æŠŠæ•°æ®å‘é€åˆ°äº‘ç«¯çš„ä»»åŠ¡
     xTaskCreate(Read_HumiTemp_Task, "Read_HumiTemp_Task", 150, NULL, 2, &Read_HumiTemp_handle);
     xTaskCreate(Read_AD_Task, "Read_AD_Task", 135, NULL, 2, &Read_AD_handle);
 
     xTaskCreate(Send_inf_toEMQX_Task, "Send_inf_toEMQX_Task", 150, NULL, 2, &Send_inf_toEMQX_handle);
-    // ¶ÁÈ¡±àÂëÆ÷ÖµµÄÈÎÎñ
+    // è¯»å–ç¼–ç å™¨å€¼çš„ä»»åŠ¡
     xTaskCreate(Encoder_Read_Task, "Encoder_Read_Task", 50, NULL, 3, &Encoder_Read_handle);
 
-    // ´´½¨Ò»¸öÓïÒôÄ£¿éµÄ¼àÌýÈÎÎñ
+    // åˆ›å»ºä¸€ä¸ªè¯­éŸ³æ¨¡å—çš„ç›‘å¬ä»»åŠ¡
     xTaskCreate(Voice_Parser_Task, "Voice_Parser_Task", 150, NULL, 4, &Voice_Parser_handle);
 
-    // ´´½¨Ò»¸ö¼àÌý·äÃùÆ÷µÄÈÎÎñ
+    // åˆ›å»ºä¸€ä¸ªç›‘å¬èœ‚é¸£å™¨çš„ä»»åŠ¡
     xTaskCreate(Buzzer_Parser_Task, "Buzzer_Parser_Task", 50, NULL, 3, &Buzzer_Parser_handle);
 
-    // ´´½¨Ò»¸ö¼àÌýÍøÂçÁ¬½Ó×´¿öµÄÈÎÎñ
+    // åˆ›å»ºä¸€ä¸ªç›‘å¬ç½‘ç»œè¿žæŽ¥çŠ¶å†µçš„ä»»åŠ¡
     xTaskCreate(WiFi_EMQX_Listener_Task, "WiFi_EMQX_Listener_Task", 180, NULL, 3, &WiFi_EMQX_Listener_handle);
 
     vTaskDelete(NULL);
@@ -229,7 +229,7 @@ void Read_HumiTemp_Task(void *param)
 {
     while (1)
     {
-        // ¹Ø±ÕÈÎÎñÇÐ»»£¬·ÀÖ¹¶ÁÈ¡±»´ò¶Ï
+        // å…³é—­ä»»åŠ¡åˆ‡æ¢ï¼Œé˜²æ­¢è¯»å–è¢«æ‰“æ–­
         Receive_Start();
 
         vTaskSuspendAll();
@@ -240,14 +240,14 @@ void Read_HumiTemp_Task(void *param)
 
         xEventGroupSetBits(Send_inf_handle, TASK1_FLAG);
 
-        // »ñÈ¡Õ»¸ßË®Î»£¬µ÷ÊÔÓÃ
+        // èŽ·å–æ ˆé«˜æ°´ä½ï¼Œè°ƒè¯•ç”¨
         //  uint16_t res = uxTaskGetStackHighWaterMark2(Read_HumiTemp_handle);
         //  Serial1_Printf("Read_HumiTemp_Task:%d\r\n",res);
 
-        // µ÷ÊÔµÄÊ±ºòÓÃÕâ¸ö
-        //  Serial1_Printf("Êª¶È£º%d.%d%%,ÎÂ¶È£º%d.%d,Ð£ÑéºÍ:%d\r\n",DHT11_DataBuf[0],DHT11_DataBuf[1],DHT11_DataBuf[2],DHT11_DataBuf[3],DHT11_DataBuf[4]);
+        // è°ƒè¯•çš„æ—¶å€™ç”¨è¿™ä¸ª
+        //  Serial1_Printf("æ¹¿åº¦ï¼š%d.%d%%,æ¸©åº¦ï¼š%d.%d,æ ¡éªŒå’Œ:%d\r\n",DHT11_DataBuf[0],DHT11_DataBuf[1],DHT11_DataBuf[2],DHT11_DataBuf[3],DHT11_DataBuf[4]);
 
-        // ·¢ËÍÐÅÏ¢Ì«ÀË·ÑÊ±¼äÁË£¬ËùÒÔÃ¿´ÎµÈÁ½Ãë°É£¬²»È»Ó°ÏìOLEDË¢ÐÂ
+        // å‘é€ä¿¡æ¯å¤ªæµªè´¹æ—¶é—´äº†ï¼Œæ‰€ä»¥æ¯æ¬¡ç­‰ä¸¤ç§’å§ï¼Œä¸ç„¶å½±å“OLEDåˆ·æ–°
         vTaskDelay(2000);
     }
 }
@@ -261,7 +261,7 @@ void Read_AD_Task(void *param)
         Relative_Light = (float)100 - ADC_Value[0] / 4096.0 * 100;
         Relative_Air = ADC_Value[1] / 4096.0 * 100;
 
-        // ´¦ÀíÊý¾Ý
+        // å¤„ç†æ•°æ®
         light[6] = (uint8_t)Relative_Light / 10 % 10 + '0';
         light[7] = (uint8_t)Relative_Light % 10 + '0';
         light[9] = (uint16_t)(Relative_Light * 100) % 100 / 10 % 10 + '0';
@@ -274,29 +274,29 @@ void Read_AD_Task(void *param)
 
         xEventGroupSetBits(Send_inf_handle, TASK2_FLAG);
 
-        if (Relative_Air >= 20) // ¿ÕÆøÎÛÈ¾
+        if (Relative_Air >= 20) // ç©ºæ°”æ±¡æŸ“
         {
             xSemaphoreGive(Buzzer_Semaphore_handle);
         }
 
-        // »ñÈ¡Õ»¸ßË®Î»£¬µ÷ÊÔÓÃ
+        // èŽ·å–æ ˆé«˜æ°´ä½ï¼Œè°ƒè¯•ç”¨
         //  uint16_t res = uxTaskGetStackHighWaterMark2(Read_AD_handle);
         //  Serial1_Printf("Read_AD_Task:%d\r\n",res);
 
-        // µ÷ÊÔµÄÊ±ºòÓÃÕâ¸ö
-        //  Serial1_Printf("Ïà¶Ô¹âÕÕÇ¿¶È£º%05.2f%%\r\n",Relative_Light);
-        //  Serial1_Printf("Ïà¶Ô¿ÕÆøÎÛÈ¾£º%05.2f%%\r\n",Realtive_Air);
+        // è°ƒè¯•çš„æ—¶å€™ç”¨è¿™ä¸ª
+        //  Serial1_Printf("ç›¸å¯¹å…‰ç…§å¼ºåº¦ï¼š%05.2f%%\r\n",Relative_Light);
+        //  Serial1_Printf("ç›¸å¯¹ç©ºæ°”æ±¡æŸ“ï¼š%05.2f%%\r\n",Realtive_Air);
 
         vTaskDelay(300);
     }
 }
 
-// °´¼ü¿ØÖÆµÄÈÎÎñ
+// æŒ‰é”®æŽ§åˆ¶çš„ä»»åŠ¡
 void Key_Task(void *param)
 {
     uint8_t KeyNum = 0;
 
-    // ¿ªÆôÈí¼þ¶¨Ê±Æ÷
+    // å¼€å¯è½¯ä»¶å®šæ—¶å™¨
     xTimerStart(Timer_handle, portMAX_DELAY);
 
     while (1)
@@ -335,8 +335,8 @@ void Key_Task(void *param)
         {
             xSemaphoreTake(WiFi_Mutex_handle,portMAX_DELAY);
 
-            // ÖØÁ¬EMQX
-            AT_SendCommand("AT+MQTTCLEAN=0"); // ÏÈ°ÑÉÏ´ÎÁ¬½Ó²ÐÁôÇåÀíÁË
+            // é‡è¿žEMQX
+            AT_SendCommand("AT+MQTTCLEAN=0"); // å…ˆæŠŠä¸Šæ¬¡è¿žæŽ¥æ®‹ç•™æ¸…ç†äº†
 
             AT_SendCommand("AT+MQTTUSERCFG=0,1,\"esp8266\",\"\",\"\",0,0,\"\"");
 
@@ -344,34 +344,34 @@ void Key_Task(void *param)
 
             AT_SendCommand("AT+MQTTCONN=0,\"broker.emqx.io\",1883,0");
 
-            AT_SendCommand("AT+MQTTSUB=0,\"switch_control\",0"); // ¶©ÔÄ¿ª¹Ø¿ØÖÆÖ÷Ìâ
+            AT_SendCommand("AT+MQTTSUB=0,\"switch_control\",0"); // è®¢é˜…å¼€å…³æŽ§åˆ¶ä¸»é¢˜
 
             xSemaphoreGive(WiFi_Mutex_handle);
         }
-        else if (KeyNum == 5) // ±àÂëÆ÷°´¼ü
+        else if (KeyNum == 5) // ç¼–ç å™¨æŒ‰é”®
         {
-            // ¹Øµç»ú,°´¼ü°´ÏÂ°Ñµç»úpwmÖÃÎª0
+            // å…³ç”µæœº,æŒ‰é”®æŒ‰ä¸‹æŠŠç”µæœºpwmç½®ä¸º0
             TIM4->CNT = 0;
             Set_Motor(0);
         }
     }
 }
 
-// OLEDÏÔÊ¾ÈÎÎñ
+// OLEDæ˜¾ç¤ºä»»åŠ¡
 void OLED_Display_Task(void *param)
 {
     while (1)
     {
         OLED_Clear();
-        OLED_ShowChinese(0, 0, "ÎÂ¶È£º");
-        OLED_ShowChinese(0, 16, "Êª¶È£º");
-        OLED_ShowChinese(0, 32, "¹âÕÕÇ¿¶È£º");
-        OLED_ShowChinese(0, 48, "¿ÕÆøÎÛÈ¾£º");
+        OLED_ShowChinese(0, 0, "æ¸©åº¦ï¼š");
+        OLED_ShowChinese(0, 16, "æ¹¿åº¦ï¼š");
+        OLED_ShowChinese(0, 32, "å…‰ç…§å¼ºåº¦ï¼š");
+        OLED_ShowChinese(0, 48, "ç©ºæ°”æ±¡æŸ“ï¼š");
         OLED_Printf(48, 0, OLED_8X16, "%d.%d", DHT11_DataBuf[2], DHT11_DataBuf[3]);
         OLED_Printf(48, 16, OLED_8X16, "%d%%", DHT11_DataBuf[0]);
         OLED_Printf(80, 32, OLED_8X16, "%05.2f%%", Relative_Light);
         OLED_Printf(80, 48, OLED_8X16, "%05.2f%%", Relative_Air);
-        OLED_ShowChinese(80, 0, "¡æ");
+        OLED_ShowChinese(80, 0, "â„ƒ");
 
         // OLED_Printf(0,0,OLED_8X16,"PWM:%d",Encoder_GetNum());
 
@@ -380,30 +380,30 @@ void OLED_Display_Task(void *param)
 
         vTaskDelay(300);
 
-        // »ñÈ¡Õ»¸ßË®Î»£¬µ÷ÊÔÓÃ
+        // èŽ·å–æ ˆé«˜æ°´ä½ï¼Œè°ƒè¯•ç”¨
         //  uint16_t res = uxTaskGetStackHighWaterMark2(OLED_Display_handle);
         //  Serial1_Printf("OLED_Display_Task:%d\r\n",res);
 
-        // AT¼àÌýÈÎÎñµÄÕ»¸ßË®Î»
+        // ATç›‘å¬ä»»åŠ¡çš„æ ˆé«˜æ°´ä½
         //  res = uxTaskGetStackHighWaterMark2(AT_Task_Parser_handle);
         //  Serial1_Printf("AT_Task_Parser_handle:%d\r\n",res);
 
-        // ½ÓÊÕWifi°´¼ü¿ØÖÆµÄÕ»¸ßË®Î»
+        // æŽ¥æ”¶WifiæŒ‰é”®æŽ§åˆ¶çš„æ ˆé«˜æ°´ä½
         //  res = uxTaskGetStackHighWaterMark2(Switch_Control_handle);
         //  Serial1_Printf("Switch_Control_handle:%d\r\n",res);
 
-        // °´¼üÈÎÎñµÄÕ»¸ßË®Î»
+        // æŒ‰é”®ä»»åŠ¡çš„æ ˆé«˜æ°´ä½
         // uint16_t res = uxTaskGetStackHighWaterMark2(Key_Task_handle);
         // Serial1_Printf("Key_Task_handle:%d\r\n", res);
     }
 }
 
-// ÍùEMQXÉÏ·¢ËÍÐÅÏ¢µÄÈÎÎñ
+// å¾€EMQXä¸Šå‘é€ä¿¡æ¯çš„ä»»åŠ¡
 void Send_inf_toEMQX_Task(void *param)
 {
     while (1)
     {
-        // µÈ´ýÁ½¸ö¶ÁÈ¡¶¼ÍêÊÂÁËÔÙ·¢ËÍ
+        // ç­‰å¾…ä¸¤ä¸ªè¯»å–éƒ½å®Œäº‹äº†å†å‘é€
         xEventGroupWaitBits(Send_inf_handle, TASK1_FLAG | TASK2_FLAG, pdTRUE, pdTRUE, portMAX_DELAY);
 
         snprintf(temperature, sizeof(temperature), "%.1fC", (float)DHT11_DataBuf[2] + (float)DHT11_DataBuf[3] / 10);
@@ -413,17 +413,17 @@ void Send_inf_toEMQX_Task(void *param)
 
         if (xSemaphoreTake(WiFi_Mutex_handle, portMAX_DELAY) != pdFALSE)
         {
-            // Ã»ÓÐ±»±ðµÄÈÎÎñÕ¼ÓÃ¾Í·¢ËÍÐÅÏ¢
+            // æ²¡æœ‰è¢«åˆ«çš„ä»»åŠ¡å ç”¨å°±å‘é€ä¿¡æ¯
             Publish_Inf("Humi", humidity);
             Publish_Inf("Temp", temperature);
             Publish_Inf("Light", light);
             Publish_Inf("AirPollution", air);
 
-            // ÓÃÍêÁËÊÍ·Å
+            // ç”¨å®Œäº†é‡Šæ”¾
             xSemaphoreGive(WiFi_Mutex_handle);
         }
 
-        // ²é¿´Õ»¸ßË®Î»
+        // æŸ¥çœ‹æ ˆé«˜æ°´ä½
         //  uint16_t res = uxTaskGetStackHighWaterMark2(Send_inf_toEMQX_handle);
         //  Serial1_Printf("Send_inf_toEMQX_handle:%d\r\n",res);
     }
@@ -431,7 +431,7 @@ void Send_inf_toEMQX_Task(void *param)
 
 extern QueueHandle_t Encoder_handle;
 
-// ±àÂëÆ÷
+// ç¼–ç å™¨
 void Encoder_Read_Task(void *param)
 {
     while (1)
@@ -442,8 +442,8 @@ void Encoder_Read_Task(void *param)
     }
 }
 
-// Èí¼þ¶¨Ê±Æ÷»Øµ÷º¯Êý¹¦ÄÜ
-void MyTimer_Callback(TimerHandle_t xTimer) // 20ms½øÐÐÒ»´Î
+// è½¯ä»¶å®šæ—¶å™¨å›žè°ƒå‡½æ•°åŠŸèƒ½
+void MyTimer_Callback(TimerHandle_t xTimer) // 20msè¿›è¡Œä¸€æ¬¡
 {
     if (xTimer == Timer_handle)
     {
@@ -451,7 +451,7 @@ void MyTimer_Callback(TimerHandle_t xTimer) // 20ms½øÐÐÒ»´Î
 
         static uint16_t Count = 0;
         Count++;
-        if (Count >= 2) // Ã¿ËÄÊ®ºÁÃë¿´¿´ÓÐÃ»ÓÐÅ¡±àÂëÆ÷
+        if (Count >= 2) // æ¯å››åæ¯«ç§’çœ‹çœ‹æœ‰æ²¡æœ‰æ‹§ç¼–ç å™¨
         {
             Count = 0;
             if (Encoder_GetNum() != 0)
@@ -488,7 +488,7 @@ void MyTimer_Callback(TimerHandle_t xTimer) // 20ms½øÐÐÒ»´Î
     }
 }
 
-// ·äÃùÆ÷¼àÌýÈÎÎñ
+// èœ‚é¸£å™¨ç›‘å¬ä»»åŠ¡
 void Buzzer_Parser_Task(void *parazm)
 {
     while (1)
@@ -502,25 +502,25 @@ void Buzzer_Parser_Task(void *parazm)
     }
 }
 
-// ÍøÂç¼àÌýÈÎÎñµôÏßÁË×Ô¶¯ÖØÁ¬
+// ç½‘ç»œç›‘å¬ä»»åŠ¡æŽ‰çº¿äº†è‡ªåŠ¨é‡è¿ž
 void WiFi_EMQX_Listener_Task(void *param)
 {
-    uint8_t wifi_connected; // Á¬½Ó×´Ì¬
-    uint8_t mqtt_connected; // Á¬½Ó×´Ì¬
-    uint16_t rx_start;      // ¿ªÊ¼½ÓÊÕµÄÎ»ÖÃ
-    uint16_t rx_end;        // ½áÊøÎ»ÖÃ
+    uint8_t wifi_connected; // è¿žæŽ¥çŠ¶æ€
+    uint8_t mqtt_connected; // è¿žæŽ¥çŠ¶æ€
+    uint16_t rx_start;      // å¼€å§‹æŽ¥æ”¶çš„ä½ç½®
+    uint16_t rx_end;        // ç»“æŸä½ç½®
     uint16_t rx_length;
     uint16_t i;
-    uint8_t response[150]; // ½ÓÊÕ»Ø¸´µÄÊý×é
+    uint8_t response[150]; // æŽ¥æ”¶å›žå¤çš„æ•°ç»„
 
     while (1)
     {
-        /*µÈµ½´íÎóÁËÖ®ºóÈ¥¼ì²é*/
+        /*ç­‰åˆ°é”™è¯¯äº†ä¹‹åŽåŽ»æ£€æŸ¥*/
         xSemaphoreTake(ERROR_semaphore_handle,portMAX_DELAY);
 
         if (xSemaphoreTake(WiFi_Mutex_handle, portMAX_DELAY) != pdFALSE)
         {
-            // ·ÀÖ¹¸ú·¢ËÍÏûÏ¢µÄµÄÈÎÎñ³åÍ»£¬Á½¸öÍ¬Ò»Ê±¼äÖ»ÄÜÓÐÒ»¸öÔËÐÐ
+            // é˜²æ­¢è·Ÿå‘é€æ¶ˆæ¯çš„çš„ä»»åŠ¡å†²çªï¼Œä¸¤ä¸ªåŒä¸€æ—¶é—´åªèƒ½æœ‰ä¸€ä¸ªè¿è¡Œ
 
             rx_start = AT_Buf.write;
             AT_SendCommand("AT+CWSTATE?");
@@ -530,7 +530,7 @@ void WiFi_EMQX_Listener_Task(void *param)
                             : (uint16_t)(sizeof(AT_Buf.Buffer) - rx_start + rx_end);
             if (rx_length >= sizeof(response))
             {
-                rx_length = sizeof(response) - 1; // ÁôÒ»¸ö¿Õ·Å'\0'
+                rx_length = sizeof(response) - 1; // ç•™ä¸€ä¸ªç©ºæ”¾'\0'
             }
             for (i = 0; i < rx_length; i++)
             {
@@ -542,14 +542,14 @@ void WiFi_EMQX_Listener_Task(void *param)
             wifi_connected = (strstr((const char *)response, "+CWSTATE:2,") != NULL);
             if (wifi_connected)
             {
-                // WiFiÔÚÏß
-                Serial1_Printf("WiFiÔÚÏß\r\n");
+                // WiFiåœ¨çº¿
+                Serial1_Printf("WiFiåœ¨çº¿\r\n");
             }
             else
             {
-                Serial1_Printf("WiFiµôÏßÁË\r\n");
-                AT_SendCommand("AT+CWJAP=\"**********\",\"**********\""); // ÖØÁ¬
-                Serial1_Printf("WiFiÒÑÖØÁ¬\r\n");
+                Serial1_Printf("WiFiæŽ‰çº¿äº†\r\n");
+                AT_SendCommand("AT+CWJAP=\"**********\",\"**********\""); // é‡è¿ž
+                Serial1_Printf("WiFiå·²é‡è¿ž\r\n");
             }
 
             rx_start = AT_Buf.write;
@@ -569,29 +569,29 @@ void WiFi_EMQX_Listener_Task(void *param)
             response[rx_length] = '\0';
             Serial1_Printf("%s\r\n", response);
 
-            /* MQTT ×´Ì¬ÖµÎª 1 ±íÊ¾ÒÑÁ¬½Ó EMQX¡£ */
+            /* MQTT çŠ¶æ€å€¼ä¸º 1 è¡¨ç¤ºå·²è¿žæŽ¥ EMQXã€‚ */
             mqtt_connected = (strstr((const char *)response, "+MQTTCONN:0,4") != NULL ||
                               strstr((const char *)response, "+MQTTCONN:0,5") != NULL ||
                               strstr((const char *)response, "+MQTTCONN:0,6") != NULL);
             if (mqtt_connected)
             {
-                Serial1_Printf("EMQXÔÚÏß\r\n");
+                Serial1_Printf("EMQXåœ¨çº¿\r\n");
             }
             else
             {
-                Serial1_Printf("EMQXµôÏßÁË\r\n");
+                Serial1_Printf("EMQXæŽ‰çº¿äº†\r\n");
                 if (wifi_connected)
                 {
                     uint8_t KeyNum = 4;
                     xQueueSend(Key_Queue_handle, &KeyNum, 0);
-                    Serial1_Printf("EMQXÒÑÖØÁ¬\r\n");
+                    Serial1_Printf("EMQXå·²é‡è¿ž\r\n");
                 }
             }
 
             //  uint16_t res = uxTaskGetStackHighWaterMark2(WiFi_EMQX_Listener_handle);
             //  Serial1_Printf("WiFi_EMQX_Listener_Task:%d\r\n",res);
 
-            // ÓÃÍêÁËÊÍ·Å
+            // ç”¨å®Œäº†é‡Šæ”¾
             xSemaphoreGive(WiFi_Mutex_handle);
         }
     }

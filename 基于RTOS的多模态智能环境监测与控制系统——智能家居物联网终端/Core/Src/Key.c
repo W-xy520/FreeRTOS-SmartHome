@@ -53,7 +53,7 @@ void Key_Tick(void)
         {
             KeyNum = pre_state;
 
-            //Íù¶ÓÁĞÀïĞ´°´¼üÖµ
+            //å¾€é˜Ÿåˆ—é‡Œå†™æŒ‰é”®å€¼
             xQueueSend(Key_Queue_handle,&KeyNum,0);
         }
     }

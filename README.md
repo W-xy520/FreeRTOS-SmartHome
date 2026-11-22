@@ -1,6 +1,12 @@
 # FreeRTOS-SmartHome
 
-基于 RTOS 的多模态智能环境监测与控制系统 —— 智能家居物联网终端。
+**基于 RTOS 的多模态智能环境监测与控制系统 —— 智能家居物联网终端**
+
+![MCU](https://img.shields.io/badge/MCU-STM32F103-0b5394)
+![RTOS](https://img.shields.io/badge/RTOS-FreeRTOS-1f6feb)
+![Protocol](https://img.shields.io/badge/Protocol-MQTT-3fb950)
+![IDE](https://img.shields.io/badge/IDE-Keil%20MDK-8957e5)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 以 **STM32F103** + **FreeRTOS** 为核心，通过 DHT11、光敏电阻、空气质量传感器采集环境数据，本地 OLED 实时显示，并通过 ESP-01S（ESP8266）以 AT 指令接入 WiFi，走 **MQTT** 把数据上报到云平台，同时接收云端下发的控制指令，实现"环境感知 + 本地交互 + 远程控制"的智能家居终端。
 

@@ -71,7 +71,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-//ĞÅºÅÁ¿¾ä±ú
+//ä¿¡å·é‡å¥æŸ„
 SemaphoreHandle_t ESP01S_Semaphore_handle;
 QueueHandle_t AT_SendResult_handle;
 QueueHandle_t switch_control_handle;
@@ -80,14 +80,14 @@ QueueHandle_t Key_Queue_handle;
 QueueHandle_t Encoder_handle;
 
 
-SemaphoreHandle_t Voice_handle;//ÓïÒôµÄĞÅºÅÁ¿¾ä±ú
+SemaphoreHandle_t Voice_handle;//è¯­éŸ³çš„ä¿¡å·é‡å¥æŸ„
 
-//ÊÂ¼ş±êÖ¾×é¾ä±ú
+//äº‹ä»¶æ ‡å¿—ç»„å¥æŸ„
 EventGroupHandle_t Send_inf_handle;
 
 
 
-//ADC´æ·ÅÊı¾İµÄÊı×é
+//ADCå­˜æ”¾æ•°æ®çš„æ•°ç»„
 uint16_t ADC_Value[2] = {0};
 
 
@@ -138,19 +138,19 @@ int main(void)
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
-  //´´½¨ĞÅºÅÁ¿,ÒªÏÈ´´½¨£¬²»È»ÉÏµçÆô¶¯µÄĞÅÏ¢´¦Àí²»ÁË,Ö÷ÒªÊÇesp8266µÄÉÏµçÆô¶¯ĞÅÏ¢
+  //åˆ›å»ºä¿¡å·é‡,è¦å…ˆåˆ›å»ºï¼Œä¸ç„¶ä¸Šç”µå¯åŠ¨çš„ä¿¡æ¯å¤„ç†ä¸äº†,ä¸»è¦æ˜¯esp8266çš„ä¸Šç”µå¯åŠ¨ä¿¡æ¯
   ESP01S_Semaphore_handle = xSemaphoreCreateCounting(256,0);
   AT_SendResult_handle = xSemaphoreCreateBinary();
   switch_control_handle = xSemaphoreCreateBinary();
   Voice_handle = xSemaphoreCreateCounting(128,0);
 
-  //´´½¨¶ÓÁĞ£¬¸ø°´¼üÓÃ
+  //åˆ›å»ºé˜Ÿåˆ—ï¼Œç»™æŒ‰é”®ç”¨
   Key_Queue_handle = xQueueCreate(5,sizeof(uint8_t));
 
-  //´´½¨±êÖ¾×é£¬·¢ËÍĞÅºÅÓÃ
+  //åˆ›å»ºæ ‡å¿—ç»„ï¼Œå‘é€ä¿¡å·ç”¨
   Send_inf_handle = xEventGroupCreate();
 
-  //¸ø±àÂëÆ÷ÓÃµÄ¼ÆÊıĞÍĞÅºÅÁ¿
+  //ç»™ç¼–ç å™¨ç”¨çš„è®¡æ•°å‹ä¿¡å·é‡
   Encoder_handle = xSemaphoreCreateBinary();
 
 

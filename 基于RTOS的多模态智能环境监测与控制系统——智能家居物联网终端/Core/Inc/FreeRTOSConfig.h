@@ -68,7 +68,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
 
-//²»¼Ó»á±¨´í
+//ä¸åŠ ä¼šæŠ¥é”™
 #define INCLUDE_xTaskGetCurrentTaskHandle   1
 
 /* This is the raw value as per the Cortex-M3 NVIC.  Values can be 255
@@ -86,22 +86,22 @@ NVIC value of 255. */
 #define configLIBRARY_KERNEL_INTERRUPT_PRIORITY	15
 
 
-//±ØĞëÌí¼ÓµÄÈı¸öºê
+//å¿…é¡»æ·»åŠ çš„ä¸‰ä¸ªå®
 #define xPortPendSVHandler   PendSV_Handler
 #define vPortSVCHandler      SVC_Handler
 #define INCLUDE_xTaskGetSchedulerState      1
 
 
 
-//Èí¼ş¶¨Ê±Æ÷µÄºê
-#define configUSE_TIMERS 1                                          /* 1: Ê¹ÄÜÈí¼ş¶¨Ê±Æ÷, Ä¬ÈÏ: 0¡£Ê¹ÄÜºóĞèÖ¸¶¨ÏÂÃæ3¸ö */
-#define configTIMER_TASK_PRIORITY (configMAX_PRIORITIES - 1)        /* ¶¨ÒåÈí¼ş¶¨Ê±Æ÷ÈÎÎñµÄÓÅÏÈ¼¶ */
-#define configTIMER_QUEUE_LENGTH 5                                  /* ¶¨ÒåÈí¼ş¶¨Ê±Æ÷ÃüÁî¶ÓÁĞµÄ³¤¶È*/
-#define configTIMER_TASK_STACK_DEPTH (configMINIMAL_STACK_SIZE * 2) /* ¶¨ÒåÈí¼ş¶¨Ê±Æ÷ÈÎÎñµÄÕ»¿Õ¼ä´óĞ¡*/
+//è½¯ä»¶å®šæ—¶å™¨çš„å®
+#define configUSE_TIMERS 1                                          /* 1: ä½¿èƒ½è½¯ä»¶å®šæ—¶å™¨, é»˜è®¤: 0ã€‚ä½¿èƒ½åéœ€æŒ‡å®šä¸‹é¢3ä¸ª */
+#define configTIMER_TASK_PRIORITY (configMAX_PRIORITIES - 1)        /* å®šä¹‰è½¯ä»¶å®šæ—¶å™¨ä»»åŠ¡çš„ä¼˜å…ˆçº§ */
+#define configTIMER_QUEUE_LENGTH 5                                  /* å®šä¹‰è½¯ä»¶å®šæ—¶å™¨å‘½ä»¤é˜Ÿåˆ—çš„é•¿åº¦*/
+#define configTIMER_TASK_STACK_DEPTH (configMINIMAL_STACK_SIZE * 2) /* å®šä¹‰è½¯ä»¶å®šæ—¶å™¨ä»»åŠ¡çš„æ ˆç©ºé—´å¤§å°*/
 
 
 
-/*¿ªÆô¼ÆÊıĞÍĞÅºÅÁ¿µÄºê*/
+/*å¼€å¯è®¡æ•°å‹ä¿¡å·é‡çš„å®*/
 #define configUSE_COUNTING_SEMAPHORES           1
 #define configSUPPORT_DYNAMIC_ALLOCATION        1
 
@@ -109,7 +109,7 @@ NVIC value of 255. */
 #define INCLUDE_uxTaskGetStackHighWaterMark2    1
 
 
-//¿ªÆô»¥³âÁ¿µÄºê
+//å¼€å¯äº’æ–¥é‡çš„å®
 #define configSUPPORT_DYNAMIC_ALLOCATION        1
 #define configUSE_MUTEXES                       1
 

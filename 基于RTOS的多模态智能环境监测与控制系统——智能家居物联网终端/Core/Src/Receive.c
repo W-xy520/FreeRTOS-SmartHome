@@ -18,7 +18,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     {
         BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
 
-        Buffer_Write(&Rx,&AT_Buf);//Ã¿´Î¶¼°Ñ½ÓÊÕµ½µÄÊı¾İĞ´µ½»·ĞÎ»º³åÇø½á¹¹ÌåÖĞ
+        Buffer_Write(&Rx,&AT_Buf);//æ¯æ¬¡éƒ½æŠŠæ¥æ”¶åˆ°çš„æ•°æ®å†™åˆ°ç¯å½¢ç¼“å†²åŒºç»“æ„ä½“ä¸­
 
         xSemaphoreGiveFromISR(ESP01S_Semaphore_handle,&pxHigherPriorityTaskWoken);
         portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
@@ -30,7 +30,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     {
         BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
 
-        Buffer_Write(&Rx,&AT_Buf);//Ã¿´Î¶¼°Ñ½ÓÊÕµ½µÄÊı¾İĞ´µ½»·ĞÎ»º³åÇø½á¹¹ÌåÖĞ
+        Buffer_Write(&Rx,&AT_Buf);//æ¯æ¬¡éƒ½æŠŠæ¥æ”¶åˆ°çš„æ•°æ®å†™åˆ°ç¯å½¢ç¼“å†²åŒºç»“æ„ä½“ä¸­
 
         xSemaphoreGiveFromISR(Voice_handle,&pxHigherPriorityTaskWoken);
         portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);

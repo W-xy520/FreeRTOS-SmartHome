@@ -14,7 +14,7 @@
 
 #define BUFFER_MAX 256
 
-// ĞÅºÅÁ¿¾ä±ú
+// ä¿¡å·é‡å¥æŸ„
 extern QueueHandle_t ESP01S_Semaphore_handle;
 extern QueueHandle_t AT_SendResult_handle;
 extern QueueHandle_t switch_control_handle;
@@ -31,20 +31,20 @@ extern volatile uint8_t LED_Flag;
 
 extern volatile uint32_t heartbeat_timeout;
 
-// °´¼üµÄ¶ÓÁĞ
+// æŒ‰é”®çš„é˜Ÿåˆ—
 extern QueueHandle_t Key_Queue_handle;
 
 
-//WiFiºÍEMQX¼ì²âµÄ¾ä±ú
+//WiFiå’ŒEMQXæ£€æµ‹çš„å¥æŸ„
 extern EventGroupHandle_t EMQX_Event_handle;
 
 
 
-Sbuf AT_Buf; // »·ĞÎ»º³åÇø½á¹¹Ìå£¬ÄÚ²¿´æµÄÊÇ¶ÁĞ´µÄ±êÖ¾Î»ÓïÒôÄ£¿éÒ²ÓÃµÄÕâ¸ö»º³åÇø
+Sbuf AT_Buf; // ç¯å½¢ç¼“å†²åŒºç»“æ„ä½“ï¼Œå†…éƒ¨å­˜çš„æ˜¯è¯»å†™çš„æ ‡å¿—ä½è¯­éŸ³æ¨¡å—ä¹Ÿç”¨çš„è¿™ä¸ªç¼“å†²åŒº
 
-uint8_t AT_receive_buf[BUFFER_MAX]; // ÓÃÀ´½ÓÊÕÊı¾İ
-uint8_t Switch_receive_buf[100];    // ÓÃÀ´½ÓÊÕ°´¼ü¿ØÖÆµÄÊı¾İ
-uint8_t Voice_receive_buf[100];     // ÓÃÀ´½ÓÊÕÓïÒôÄ£¿éµÄĞÅÏ¢
+uint8_t AT_receive_buf[BUFFER_MAX]; // ç”¨æ¥æ¥æ”¶æ•°æ®
+uint8_t Switch_receive_buf[100];    // ç”¨æ¥æ¥æ”¶æŒ‰é”®æ§åˆ¶çš„æ•°æ®
+uint8_t Voice_receive_buf[100];     // ç”¨æ¥æ¥æ”¶è¯­éŸ³æ¨¡å—çš„ä¿¡æ¯
 
 void ATCommand_Init(void)
 {
@@ -58,15 +58,15 @@ uint8_t AT_SendCommand(char *string)
 
     Serial2_Printf("%s\r\n", string);
 
-    res = xSemaphoreTake(AT_SendResult_handle, 3500); // Ã¿´Î×î¶àµÈ3.5Ãë
+    res = xSemaphoreTake(AT_SendResult_handle, 3500); // æ¯æ¬¡æœ€å¤šç­‰3.5ç§’
 
     return res;
 }
 
-// ¶ÁĞ´µÄº¯Êı
-void Buffer_Write(uint8_t *w, Sbuf *Buf) // BufÊÇÄÇ¸ö½á¹¹Ìå£¬ÀïÃæ´æµÄÊÇ±êÖ¾Î»£¬²»ÊÇÊı¾İ
+// è¯»å†™çš„å‡½æ•°
+void Buffer_Write(uint8_t *w, Sbuf *Buf) // Bufæ˜¯é‚£ä¸ªç»“æ„ä½“ï¼Œé‡Œé¢å­˜çš„æ˜¯æ ‡å¿—ä½ï¼Œä¸æ˜¯æ•°æ®
 {
-    uint16_t i = (Buf->write + 1) % BUFFER_MAX; // ºê¶¨Òå£¬¾ÍÊÇĞ´µÄÊı×é×î´óÖµ
+    uint16_t i = (Buf->write + 1) % BUFFER_MAX; // å®å®šä¹‰ï¼Œå°±æ˜¯å†™çš„æ•°ç»„æœ€å¤§å€¼
 
     if (i != Buf->read)
     {
@@ -89,7 +89,7 @@ uint8_t Buffer_Read(uint8_t *r, Sbuf *Buf)
     }
 }
 
-uint8_t Switch_Control_Read(uint8_t *r, Sbuf *Buf) // µÚÒ»¸öÊı×é½ÓÊÕÇ°ÖÃÃüÁî£¬µÚ¶ş¸öÊı×é½ÓÊÕ°´¼ü¿ØÖÆµÄÕıÊ½ÃüÁî
+uint8_t Switch_Control_Read(uint8_t *r, Sbuf *Buf) // ç¬¬ä¸€ä¸ªæ•°ç»„æ¥æ”¶å‰ç½®å‘½ä»¤ï¼Œç¬¬äºŒä¸ªæ•°ç»„æ¥æ”¶æŒ‰é”®æ§åˆ¶çš„æ­£å¼å‘½ä»¤
 {
     uint16_t i = 0;
     uint16_t len = 0;
@@ -133,7 +133,7 @@ uint8_t Switch_Control_Read(uint8_t *r, Sbuf *Buf) // µÚÒ»¸öÊı×é½ÓÊÕÇ°ÖÃÃüÁî£¬µÚ
     }
 }
 
-// ¼ì²âATÃüÁîÊÇ·ñ·¢ËÍ³É¹¦µÄ¼àÌıÈÎÎñ
+// æ£€æµ‹ATå‘½ä»¤æ˜¯å¦å‘é€æˆåŠŸçš„ç›‘å¬ä»»åŠ¡
 void AT_Task_Parser(void *param)
 {
     uint16_t i = 0;
@@ -145,7 +145,7 @@ void AT_Task_Parser(void *param)
         Buffer_Read(&AT_receive_buf[i], &AT_Buf);
         AT_receive_buf[i + 1] = '\0';
 
-        // Èç¹ûÏÈ½ÓÊÕµ½»Ø³µ¾ÍËµÃ÷Ã»ÓĞ½ÓÊÕµ½ÌØÊâĞÅºÅ£¨¶©ÔÄµÄĞÅºÅ£©
+        // å¦‚æœå…ˆæ¥æ”¶åˆ°å›è½¦å°±è¯´æ˜æ²¡æœ‰æ¥æ”¶åˆ°ç‰¹æ®Šä¿¡å·ï¼ˆè®¢é˜…çš„ä¿¡å·ï¼‰
         if (i > 0 && AT_receive_buf[i] == '\n' && AT_receive_buf[i - 1] == '\r')
         {
             if (strstr((const char *)AT_receive_buf, "OK\r\n") != NULL)
@@ -174,7 +174,7 @@ void AT_Task_Parser(void *param)
             i = 0;
 
             uint16_t len = Switch_Control_Read(Switch_receive_buf, &AT_Buf);
-            Serial1_Printf("½ÓÊÕµ½ÁË%d¸ö×Ö½ÚÊı¾İ£¬ËûÃÇÊÇ%s\r\n", len, &Switch_receive_buf[4]);
+            Serial1_Printf("æ¥æ”¶åˆ°äº†%dä¸ªå­—èŠ‚æ•°æ®ï¼Œä»–ä»¬æ˜¯%s\r\n", len, &Switch_receive_buf[4]);
         }
         else
         {
@@ -183,7 +183,7 @@ void AT_Task_Parser(void *param)
     }
 }
 
-// °´¼ü¿ØÖÆµÄ¼àÌıÈÎÎñ
+// æŒ‰é”®æ§åˆ¶çš„ç›‘å¬ä»»åŠ¡
 void Switch_Control_Parser(void *param)
 {
     while (1)
@@ -235,7 +235,7 @@ void Switch_Control_Parser(void *param)
     }
 }
 
-// ÓïÒôµÄ¼àÌıÈÎÎñ
+// è¯­éŸ³çš„ç›‘å¬ä»»åŠ¡
 void Voice_Parser_Task(void *param)
 {
     uint16_t i = 0;
@@ -287,7 +287,7 @@ void Voice_Parser_Task(void *param)
             {
                 uint8_t KeyNum = 4;
 
-                xQueueSend(Key_Queue_handle, &KeyNum, 1000); // ×î¶àµÈÒ»Ãë
+                xQueueSend(Key_Queue_handle, &KeyNum, 1000); // æœ€å¤šç­‰ä¸€ç§’
             }
             else if (strstr((const char *)Voice_receive_buf, "LED_Breathe\r\n") != NULL)
             {

@@ -33,15 +33,15 @@ void Receive_Data(void)
 {
 	for(uint8_t i = 0;i < 5;i ++)
 	{
-		DHT11_DataBuf[i + 5] = DHT11_DataBuf[i];//°ÑÔ­À´µÄ´æÆðÀ´£¬ÒªÊÇÐ£ÑéºÍ²»¶Ô¾Í»¹ÓÃÔ­À´µÄÊý¾Ý
+		DHT11_DataBuf[i + 5] = DHT11_DataBuf[i];//æŠŠåŽŸæ¥çš„å­˜èµ·æ¥ï¼Œè¦æ˜¯æ ¡éªŒå’Œä¸å¯¹å°±è¿˜ç”¨åŽŸæ¥çš„æ•°æ®
 	}
 	
     TimeOut = HAL_GetTick();
-    //ÕâÊÇ½ÓÊÕÓ¦´ðµÄÊ±Ðò£¬»¹Ã»½áÊø
+    //è¿™æ˜¯æŽ¥æ”¶åº”ç­”çš„æ—¶åºï¼Œè¿˜æ²¡ç»“æŸ
     while(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_9) == RESET && HAL_GetTick() - TimeOut < 500);
     while(HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_9) == SET && HAL_GetTick() - TimeOut < 500);
 
-    //¿ªÊ¼½ÓÊÕÊý¾Ý
+    //å¼€å§‹æŽ¥æ”¶æ•°æ®
     for(uint8_t j = 0;j < 5;j ++)
     {
         for (uint8_t i = 0;i < 8;i ++)
@@ -63,7 +63,7 @@ uint8_t Read_DHT11(void)
 {
     if (Receive_ACK() == 1)
     {
-		Serial1_Printf("Î´Ó¦´ð\r\n");//µ÷ÊÔÐÅÏ¢
+		Serial1_Printf("æœªåº”ç­”\r\n");//è°ƒè¯•ä¿¡æ¯
         return 0;
     }
     Receive_Data();
@@ -72,7 +72,7 @@ uint8_t Read_DHT11(void)
     {
 		for(uint8_t i = 0;i < 5;i ++)
 		{
-            Serial1_Printf("Ð£ÑéºÍ³ö´í£¬±£ÁôÉÏÒ»´ÎµÄÊý¾Ý\r\n");
+            Serial1_Printf("æ ¡éªŒå’Œå‡ºé”™ï¼Œä¿ç•™ä¸Šä¸€æ¬¡çš„æ•°æ®\r\n");
 			DHT11_DataBuf[i] = DHT11_DataBuf[i + 5];
 		}
         return 0;
