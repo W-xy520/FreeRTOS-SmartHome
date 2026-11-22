@@ -79,15 +79,16 @@ RTOS 任务划分（优先级由高到低按创建顺序）：
 
 ```
 .
-├── 基于RTOS的多模态智能环境监测与控制系统——智能家居物联网终端
-│   ├── Core
-│   │   ├── Inc/            各模块头文件
-│   │   └── Src/            业务源码（传感器、OLED、电机、AT 指令、任务调度等）
-│   ├── Drivers/            STM32 HAL 库与 CMSIS
-│   ├── FreeRTOS/           FreeRTOS 内核源码
-│   └── MDK-ARM/            Keil 工程（Key.uvprojx）
-└── STMProject_FreeRTOS/    语音模块离线模型与配置文件
+└── 基于RTOS的多模态智能环境监测与控制系统——智能家居物联网终端
+    ├── Core
+    │   ├── Inc/            各模块头文件
+    │   └── Src/            业务源码（传感器、OLED、电机、AT 指令、任务调度等）
+    ├── Drivers/            STM32 HAL 库与 CMSIS
+    ├── FreeRTOS/           FreeRTOS 内核源码
+    └── MDK-ARM/            Keil 工程（Key.uvprojx）
 ```
+
+> 语音模块的天问 Block 工程（`.hd`、离线识别模型、播报 mp3）为本地开发文件，未纳入本仓库。
 
 ## 说明
 

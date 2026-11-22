@@ -20,6 +20,9 @@ MDK-ARM/Key/
 JLinkLog.txt
 JLinkSettings.ini
 
+# ---------- 语音模块工程（本地保留，不入库） ----------
+STMProject_FreeRTOS/
+
 # ---------- IDE / 编辑器 ----------
 .vs/
 .idea/
